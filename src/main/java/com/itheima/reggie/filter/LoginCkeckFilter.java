@@ -33,7 +33,9 @@ public class LoginCkeckFilter implements Filter {
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/user/sendMsg",
+                "/user/login"
         };
         Boolean match=check(urls,requestURI);
         if(match){
@@ -47,6 +49,15 @@ public class LoginCkeckFilter implements Filter {
 
             Long empid=(Long) request.getSession().getAttribute("employee");
             BaseContext.setCurrentId(empid);
+            filterChain.doFilter(request,response);
+            return;
+        }
+
+        if(request.getSession().getAttribute("user")!=null){
+            log.info("用户已登录id为：{}",request.getSession().getAttribute("user"));
+
+            Long userid=(Long) request.getSession().getAttribute("user");
+            BaseContext.setCurrentId(userid);
             filterChain.doFilter(request,response);
             return;
         }
